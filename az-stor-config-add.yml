@@ -45,3 +45,25 @@
             - "azure"
           cloud-config:
             - "/etc/azure/azure.conf"
+# restart master services
+- hosts: masters
+  gather_facts:
+  become: yes
+  tasks:
+  - name: restart openshift services
+    service:
+      name: {{ item }}
+      state:restarted
+    with_items:
+      - atomic-openshift-master-api
+      - atomic-openshift-master-controller
+      - atomic-openshift-node
+# restart non-master services
+- hosts: infra:app
+  gather_facts:
+  become: yes
+  tasks:
+  - name: restart openshift services
+    service:
+      name: atomic-openshift-node
+      state:restarted
