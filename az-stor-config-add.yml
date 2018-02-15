@@ -1,0 +1,47 @@
+--- # add necessary blocks to ocp nodes for storage from azure to hook up
+# change master config only on masters
+- hosts: masters
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: add apiServerArguments block to master-config
+    blockinfile:
+      state: present
+      path: /etc/origin/master/master-config.yaml
+      backup: yes
+      marker: "# -- {mark} ANSIBLE MANAGED BLOCK 1 of 2 --"
+      insertafter: "  apiServerArguments:"
+      block: |2
+            cloud-provider:
+              - "azure"
+            cloud-config:
+              - "/etc/azure/azure.conf"
+  - name: add controllerArguments block to master-config
+    blockinfile:
+      state: present
+      path: /etc/origin/master/master-config.yaml
+      backup: yes
+      marker: "# -- {mark} ANSIBLE MANAGED BLOCK 2 of 2 --"
+      insertafter: "controllerArguments:"
+      block: |2
+            cloud-provider:
+              - "azure"
+            cloud-config:
+              - "/etc/azure/azure.conf"
+# change node config on all nodes in cluster
+- hosts: all
+  gather_facts:
+  become: yes
+  tasks:
+  - name: add kubeletArguments to node config
+    blockinfile:
+      state: present
+      path: /etc/origin/node/node-config.yaml
+      backup: yes
+      marker: "# -- {mark} ANSIBLE MANAGED BLOCK 1 of 1 --"
+      insertafter: "kubeletArguments:"
+      block: |2
+          cloud-provider:
+            - "azure"
+          cloud-config:
+            - "/etc/azure/azure.conf"
