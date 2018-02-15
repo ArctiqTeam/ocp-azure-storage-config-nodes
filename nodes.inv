@@ -1,0 +1,13 @@
+[masters]
+#masters here
+
+[infra]
+#infras here
+
+[app]
+#app nodes here
+
+[all:children]
+app
+infra
+masters
