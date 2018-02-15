@@ -1,4 +1,14 @@
 --- # add necessary blocks to ocp nodes for storage from azure to hook up
+- hosts: all
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: copy prepared azure.conf to all nodes
+    copy:
+      src: azure.conf
+      dest: /etc/azure/azure.conf
+      backup: yes
+      force: yes
 # change master config only on masters
 - hosts: masters
   gather_facts: no
