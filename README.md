@@ -7,11 +7,12 @@ The noted blocks need to be added to masters and nodes in  an OCP cluster for az
 These playbooks and the accompanied inventory file facilitate putting these code blocks into place.
 
 1. Please populate the inventory file with your nodes appropriately.
-2. to add the blocks, run from your Ansible host..
+2. Please populate the azure.conf file with your environment details.
+3. to add the blocks, run from your Ansible host..
 
 `ansible-playbook -i nodes az-stor-config-add.yml`
 
-3. to remove the blocks, run from your Ansible host..
+4. to remove the blocks, run from your Ansible host..
 
 `ansible-playbook -i nodes az-stor-config-remove.yml`
 
