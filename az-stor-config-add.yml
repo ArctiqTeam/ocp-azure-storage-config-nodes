@@ -39,8 +39,8 @@
             cloud-config:
               - "/etc/azure/azure.conf"
 # change node config on all nodes in cluster
-- hosts: all
-  gather_facts:
+- hosts: infra:app
+  gather_facts: no
   become: yes
   tasks:
   - name: add kubeletArguments to node config
@@ -57,23 +57,23 @@
             - "/etc/azure/azure.conf"
 # restart master services
 - hosts: masters
-  gather_facts:
+  gather_facts: no
   become: yes
   tasks:
   - name: restart openshift services
     service:
-      name: {{ item }}
-      state:restarted
+      name: "{{ item }}"
+      state: restarted
     with_items:
       - atomic-openshift-master-api
       - atomic-openshift-master-controller
       - atomic-openshift-node
 # restart non-master services
 - hosts: infra:app
-  gather_facts:
+  gather_facts: no
   become: yes
   tasks:
   - name: restart openshift services
     service:
       name: atomic-openshift-node
-      state:restarted
+      state: restarted
