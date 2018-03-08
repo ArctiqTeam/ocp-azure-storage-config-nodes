@@ -14,25 +14,25 @@
   gather_facts: no
   become: yes
   tasks:
-  - name: add apiServerArguments block to master-config
+  - name: remove apiServerArguments block to master-config
     blockinfile:
       state: absent
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 1 of 2 --"
-      insertbefore: "  controllerArguments:"
+      insertbefore: "controllerArguments:"
       block: |2
             cloud-provider:
               - "azure"
             cloud-config:
               - "/etc/azure/azure.conf"
-  - name: add controllerArguments block to master-config
+  - name: remove controllerArguments block to master-config
     blockinfile:
       state: absent
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 2 of 2 --"
-      insertafter: "  controllerArguments:"
+      insertafter: "controllerArguments:"
       block: |2
             cloud-provider:
               - "azure"
@@ -43,7 +43,7 @@
   gather_facts: no
   become: yes
   tasks:
-  - name: add kubeletArguments to node config
+  - name: remove kubeletArguments to node config
     blockinfile:
       state: absent
       path: /etc/origin/node/node-config.yaml
