@@ -4,9 +4,11 @@
   become: yes
   tasks:
   - name: copy prepared azure.conf to all nodes
-    file:
-      path: /etc/azure/azure.conf
-      state: absent
+    copy:
+      src: azure.conf
+      dest: /etc/azure/azure.conf
+      backup: yes
+      force: yes
 # change master config only on masters
 - hosts: masters
   gather_facts: no
@@ -18,7 +20,7 @@
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 1 of 2 --"
-      insertafter: "  apiServerArguments:"
+      insertbefore: "  controllerArguments:"
       block: |2
             cloud-provider:
               - "azure"
@@ -30,15 +32,15 @@
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 2 of 2 --"
-      insertafter: "controllerArguments:"
+      insertafter: "  controllerArguments:"
       block: |2
             cloud-provider:
               - "azure"
             cloud-config:
               - "/etc/azure/azure.conf"
 # change node config on all nodes in cluster
-- hosts: all
-  gather_facts:
+- hosts: infra:app
+  gather_facts: no
   become: yes
   tasks:
   - name: add kubeletArguments to node config
@@ -55,23 +57,23 @@
             - "/etc/azure/azure.conf"
 # restart master services
 - hosts: masters
-  gather_facts:
+  gather_facts: no
   become: yes
   tasks:
-  - name: restart openshift services
+  - name: restart openshift master services
     service:
-      name: {{ item }}
-      state:restarted
+      name: "{{ item }}"
+      state: restarted
     with_items:
       - atomic-openshift-master-api
       - atomic-openshift-master-controller
-      - atomic-openshift-node
+#      - atomic-openshift-node
 # restart non-master services
 - hosts: infra:app
-  gather_facts:
+  gather_facts: no
   become: yes
   tasks:
   - name: restart openshift services
     service:
       name: atomic-openshift-node
-      state:restarted
+      state: restarted
