@@ -20,7 +20,7 @@
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 1 of 2 --"
-      insertbefore: "  controllerArguments:"
+      insertbefore: "controllerArguments:"
       block: |2
             cloud-provider:
               - "azure"
@@ -32,7 +32,7 @@
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 2 of 2 --"
-      insertafter: "  controllerArguments:"
+      insertafter: "controllerArguments:"
       block: |2
             cloud-provider:
               - "azure"
