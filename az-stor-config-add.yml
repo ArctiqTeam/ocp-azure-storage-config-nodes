@@ -1,8 +1,13 @@
 --- # add necessary blocks to ocp nodes for storage from azure to hook up
-- hosts: all
+- hosts: ocp-all
   gather_facts: no
   become: yes
   tasks:
+  - name: make the azure dir if not there
+    file:
+      path: /etc/azure
+      state: directory
+      mode: 0755
   - name: copy prepared azure.conf to all nodes
     copy:
       src: azure.conf
@@ -10,7 +15,7 @@
       backup: yes
       force: yes
 # change master config only on masters
-- hosts: masters
+- hosts: master
   gather_facts: no
   become: yes
   tasks:
@@ -39,7 +44,7 @@
             cloud-config:
               - "/etc/azure/azure.conf"
 # change node config on all nodes in cluster
-- hosts: infra:app
+- hosts: ocp-all
   gather_facts: no
   become: yes
   tasks:
@@ -56,9 +61,10 @@
           cloud-config:
             - "/etc/azure/azure.conf"
 # restart master services
-- hosts: masters
+- hosts: master
   gather_facts: no
   become: yes
+  serial: yes
   tasks:
   - name: restart openshift master services
     service:
@@ -69,7 +75,7 @@
       - atomic-openshift-master-controllers
 #      - atomic-openshift-node
 # restart non-master services
-- hosts: infra:app
+- hosts: ocp-all
   gather_facts: no
   become: yes
   tasks:
