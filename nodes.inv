@@ -1,4 +1,4 @@
-[masters]
+[master]
 #masters here
 
 [infra]
@@ -10,4 +10,4 @@
 [all:children]
 app
 infra
-masters
+master
