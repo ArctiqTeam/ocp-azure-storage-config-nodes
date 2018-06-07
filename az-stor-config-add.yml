@@ -3,12 +3,12 @@
   gather_facts: no
   become: yes
   tasks:
-  - name: make the azure dir if not there
+  - name: Make the Azure dir if not there on nodes
     file:
       path: /etc/azure
       state: directory
       mode: 0755
-  - name: copy prepared azure.conf to all nodes
+  - name: Copy your prepared `azure.conf` to all nodes
     copy:
       src: azure.conf
       dest: /etc/azure/azure.conf
@@ -25,7 +25,7 @@
       path: /etc/origin/master/master-config.yaml
       backup: yes
       marker: "# -- {mark} ANSIBLE MANAGED BLOCK 1 of 2 --"
-      insertbefore: "controllerArguments:"
+      insertafter: "apiServerArguments:"
       block: |2
             cloud-provider:
               - "azure"
@@ -66,7 +66,7 @@
   become: yes
   serial: yes
   tasks:
-  - name: restart openshift master services
+  - name: restart openshift master services in series
     service:
       name: "{{ item }}"
       state: restarted
@@ -78,8 +78,9 @@
 - hosts: ocp-all
   gather_facts: no
   become: yes
+  #serial: yes
   tasks:
-  - name: restart openshift services
+  - name: restart openshift node services in series
     service:
       name: atomic-openshift-node
       state: restarted
