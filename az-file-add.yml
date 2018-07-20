@@ -1,0 +1,32 @@
+# necessary vars from inventory:
+# storaccname   (storage account name)
+# storacckey
+#
+#
+##############
+--- # add necessary blocks to ocp nodes for storage from azure to hook up
+- hosts: ocp-all
+  gather_facts: no
+  become: yes
+  tasks:
+  - name: "Add necessary Samba & CIFS packages to all nodes"
+    yum:
+      state: present
+      update_cache: yes
+      pkg: {{ item }}
+    with_items:
+      - samba-client
+      - samba-common
+      - cifs-utils
+  - name: set SELinux booleans on all nodes
+    shell: /usr/sbin/setsebool -P virt_use_samba on; /usr/sbin/setsebool -P virt_sandbox_use_samba on
+
+  - name: save the base64 version of your storage account name
+    shell: "{{ storaccname }} | base64"
+    run_once: yes
+    register: storaccname64
+    
+  - name: save the base64 version of your key as well
+    shell: "{{ storacckey }} | base 64"
+    run_once: yes
+    register: storacckey64
