@@ -1,8 +1,9 @@
-# necessary vars from inventory:
-# storaccname   (storage account name)
-# storacckey
-#
-#
+# necessary from inventory:
+# vars:
+#  storaccname   (storage account name)
+#  storacckey
+# hostnames:
+#  1master  (a single master node under that group name)
 ##############
 --- # add necessary blocks to ocp nodes for storage from azure to hook up
 - hosts: ocp-all
@@ -27,6 +28,18 @@
     register: storaccname64
     
   - name: save the base64 version of your key as well
-    shell: "{{ storacckey }} | base 64"
+    shell: "{{ storacckey }} | base64"
     run_once: yes
     register: storacckey64
+
+- hosts: 1master
+  gather_facts: smart
+  become: no
+  tasks:
+  - name: template out the secret file for azure file
+    template:
+    run_once: yes
+      src: az-file-secret.yml.j2
+      dest: ~/az-file-secret.yml
+  - name: create from that secret, one in OpenShift
+    shell: oc create -f ~/az-file-secret.yml
