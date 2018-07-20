@@ -2,6 +2,7 @@
 # vars:
 #  storaccname   (storage account name)
 #  storacckey
+# any other variables noted in nodes.inv
 # hostnames:
 #  1master  (a single master node under that group name)
 ##############
