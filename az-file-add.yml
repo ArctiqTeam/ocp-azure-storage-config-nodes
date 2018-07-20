@@ -36,10 +36,26 @@
   gather_facts: smart
   become: no
   tasks:
+
   - name: template out the secret file for azure file
     template:
     run_once: yes
       src: az-file-secret.yml.j2
       dest: ~/az-file-secret.yml
+      backup: yes
+
   - name: create from that secret, one in OpenShift
     shell: oc create -f ~/az-file-secret.yml
+
+  - name: template out the PV object definition
+    template:
+    run_once: yes
+      src: az-file-pv-def.yml.j2
+      dest: ~/az-file-pv-def.yml
+      backup: yes
+  
+  - name: create from that definition
+    shell: oc create -f ~/az-file-pv-def.yml
+    
+  - name: notify to verify
+    debug: msg="Please verify that both of the above creation tasks, created their items in OpenShift before consuming Azure File Storage"
