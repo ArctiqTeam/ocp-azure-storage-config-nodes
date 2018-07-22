@@ -22,22 +22,27 @@
       - cifs-utils
 
   - name: set SELinux booleans on all nodes
-    shell: "/usr/sbin/setsebool -P virt_use_samba on; /usr/sbin/setsebool -P virt_sandbox_use_samba on"
-
-  - name: save the base64 version of your storage account name
-    shell: "{{ storaccname }} | base64"
-    run_once: yes
-    register: storaccname64
-    
-  - name: save the base64 version of your key as well
-    shell: "{{ storacckey }} | base64"
-    run_once: yes
-    register: storacckey64
+    shell: "setsebool -P {{ item }} on"
+    loop:
+      - virt_use_samba
+#      - virt_sandbox_use_samba
+# Relevant BZ https://bugzilla.redhat.com/show_bug.cgi?id=1592727
+#
 
 - hosts: 1master
   gather_facts: smart
   become: no
   tasks:
+  - name: save the base64 version of your storage account name
+    command: "/usr/bin/echo {{ storaccname }} | /usr/bin/base64"
+    run_once: yes
+    register: storaccname64
+
+  - name: save the base64 version of your key as well
+    command: "/usr/bin/echo {{ storacckey }} | /usr/bin/base64"
+    run_once: yes
+    register: storacckey64
+
   - name: template out the secret file for azure file
     template:
       src: "az-file-secret.yml.j2"
@@ -45,17 +50,17 @@
       backup: yes
     run_once: true
 
-  - name: "create from that secret, one in OpenShift"
-    shell: "oc create -f ~/az-file-secret.yml"
-
   - name: template out the PV object definition
     template:
       src: "az-file-pv-def.yml.j2"
       dest: "~/az-file-pv-def.yml"
       backup: yes
     run_once: true
+
+  - name: "create from that secret, one in OpenShift"
+    shell: "oc create -f ~/az-file-secret.yml"
   
-  - name: create from that definition
+  - name: create from that PV object definition
     shell: "oc create -f ~/az-file-pv-def.yml"
     
   - name: notify to verify
