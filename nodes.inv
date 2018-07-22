@@ -1,14 +1,4 @@
-### needed for file pv setup #############
-filepvname=    # name of file PV
-sizegb=     # size in GB of file PV
-accessmodesuffix=     # choose from: WriteOne WriteMany OnlyMany (Read is already there)
-shname=       # azure name of share
-storaccname   # storage account name
-storacckey    # storage account key
-#
-#Refer to: https://docs.openshift.org/3.9/install_config/persistent_storage/persistent_storage_azure_file.html#creating-azure-storage-account-secret for more details.
-###########################################
-
+#NOTE: See the vars section at the bottom for Azure File setup.
 
 [master]
 #masters here
@@ -21,7 +11,19 @@ storacckey    # storage account key
 [app]
 #app nodes here
 
-[all:children]
+[ocp-all:children]
 app
 infra
 master
+
+[ocp-all:vars]
+### needed for file pv setup #############
+filepvname=    # name of file PV
+sizegb=     # size in GB of file PV, eg: 2Gi
+accessmodesuffix=     # choose from: WriteOne WriteMany OnlyMany (Read is already there)
+shname=       # azure name of share
+storaccname=   # storage account name
+storacckey=   # storage account key
+#
+#Refer to: https://docs.openshift.org/3.9/install_config/persistent_storage/persistent_storage_azure_file.html#creating-azure-storage-account-secret for more details.
+###########################################
