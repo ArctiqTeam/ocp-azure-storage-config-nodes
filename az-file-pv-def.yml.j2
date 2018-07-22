@@ -1,13 +1,13 @@
 apiVersion: "v1"
 kind: "PersistentVolume"
 metadata:
-  name: "{% filepvname %}" # ex: pv0001
+  name: "{{ filepvname }}" # ex: pv0001
 spec:
   capacity:
-    storage: "{% sizegb %}" # ex: 10Gi 
+    storage: "{{ sizegb }}" # ex: 10Gi 
   accessModes:
-    - "Read{% accessmodesuffix %}" # ex: WriteOnce or WriteMany or OnlyMany
+    - "Read{{ accessmodesuffix }}" # ex: WriteOnce or WriteMany or OnlyMany
   azureFile: 
     secretName: az-file-secret # name of secret
-    shareName: {% shname %} 
+    shareName: {{ shname }} 
     readOnly: false 
