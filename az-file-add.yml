@@ -38,16 +38,10 @@
     run_once: yes
     register: storaccname64
 
-  - name: debug the var
-    debug: var=storaccname64
-
   - name: save the base64 version of your key as well
     shell: '/usr/bin/echo {{ storacckey }} | /usr/bin/base64'
     run_once: yes
     register: storacckey64
-
-  - name: debug the var
-    debug: var=storacckey64
 
   - name: template out the secret file for azure file
     template:
@@ -63,11 +57,11 @@
       backup: yes
     run_once: true
 
-#  - name: "create from that secret, one in OpenShift"
-#    shell: "oc create -f ~/az-file-secret.yml"
+  - name: "create from that secret, one in OpenShift"
+    shell: "oc create -f ~/az-file-secret.yml"
   
-#  - name: create from that PV object definition
-#    shell: "oc create -f ~/az-file-pv-def.yml"
+  - name: create from that PV object definition
+    shell: "oc create -f ~/az-file-pv-def.yml"
     
   - name: notify to verify
     debug: msg="Please verify that both of the above creation tasks, created their items in OpenShift before consuming Azure File Storage"

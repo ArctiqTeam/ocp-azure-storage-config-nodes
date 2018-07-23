@@ -3,15 +3,19 @@
 [master]
 #masters here
 
-[1master] # needed for file pv setup
-localhost
-[1master:vars]          # needed for file pv setup
-filepvname="pv01"   # name of file PV
+[1master] # need one of the master node hostnames in this group!
+
+
+[1master:vars]
+### needed for file pv setup #############
+filepvname="testpv01"   # name of file PV
 sizegb="1Gi"    # size in GB of file PV, eg: 2Gi
 accessmodesuffix="WriteOnce"    # choose from: WriteOnce WriteMany OnlyMany (Read is already there)
 shname="testshare"      # azure name of share
 storaccname="abc"  # storage account name
 storacckey="xyz123"  # storage account key
+#Refer to: https://docs.openshift.org/3.9/install_config/persistent_storage/persistent_storage_azure_file.html#creating-azure-storage-account-secret for more details.
+###########################################
 
 [infra]
 #infras here
@@ -24,14 +28,3 @@ app
 infra
 master
 
-[ocp-all:vars]
-### needed for file pv setup #############
-filepvname="pv01"   # name of file PV
-sizegb="1Gi"    # size in GB of file PV, eg: 2Gi
-accessmodesuffix="WriteOnce"    # choose from: WriteOnce WriteMany OnlyMany (Read is already there)
-shname="testshare"      # azure name of share
-storaccname="abc"  # storage account name
-storacckey="xyz123"  # storage account key
-#
-#Refer to: https://docs.openshift.org/3.9/install_config/persistent_storage/persistent_storage_azure_file.html#creating-azure-storage-account-secret for more details.
-###########################################
