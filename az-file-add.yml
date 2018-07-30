@@ -34,12 +34,12 @@
   become: no
   tasks:
   - name: save the base64 version of your storage account name
-    shell: '/usr/bin/echo {{ storaccname }} | /usr/bin/base64'
+    shell: '/usr/bin/echo -e {{ storaccname }} | /usr/bin/base64'
     run_once: yes
     register: storaccname64
 
   - name: save the base64 version of your key as well
-    shell: '/usr/bin/echo {{ storacckey }} | /usr/bin/base64'
+    shell: '/usr/bin/echo -e {{ storacckey }} | /usr/bin/base64'
     run_once: yes
     register: storacckey64
 
